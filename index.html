@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="fmIO4Mqa4kbHD9R2jhb-fLWyRyd3Bi9UDHC8v84CkZk">
+<title>منصة أبو العز المتقدمة لتطوير الأكواد | Live Studio</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+:root {
+    --bg-deep: #090a0f;
+    --panel-bg: #13151f;
+    --border-color: #1f2333;
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+    --accent-cyan: #06b6d4;
+    --text-main: #f1f5f9;
+    --text-muted: #64748b;
+    --html-color: #ef4444;
+    --css-color: #3b82f6;
+    --js-color: #eab308;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+body {
+    background-color: var(--bg-deep);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* شريط التنقل العلوي الفاخر */
+header {
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 65px;
+    z-index: 100;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.logo-icon {
+    font-size: 24px;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.logo-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+.actions-area {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* هيكل المنصة الرئيسي (مقسم لشبكة مربعات) */
+.workspace {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr 1fr;
+    height: calc(100vh - 65px);
+    gap: 2px;
+    background: var(--border-color);
+}
+
+.editor-box {
+    background: var(--panel-bg);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+.box-header {
+    background: rgba(15, 17, 26, 0.8);
+    padding: 8px 15px;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.box-header.html-tag { color: var(--html-color); border-top: 3px solid var(--html-color); }
+.box-header.css-tag { color: var(--css-color); border-top: 3px solid var(--css-color); }
+.box-header.js-tag { color: var(--js-color); border-top: 3px solid var(--js-color); }
+
+.code-textarea {
+    flex: 1;
+    background: transparent;
+    color: #e2e8f0;
+    border: none;
+    padding: 15px;
+    font-family: 'Fira Code', monospace, 'Cairo';
+    font-size: 14px;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    white-space: pre;
+    overflow-wrap: normal;
+    overflow-x: auto;
+}
+
+/* صندوق معاينة النتيجة المباشرة (يشغل صفين في شبكة العرض) */
+.preview-box {
+    grid-column: span 3;
+    background: #fff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.preview-header {
+    background: #0f111a;
+    color: var(--text-muted);
+    padding: 8px 15px;
+    font-size: 12px;
+    font-weight: 700;
+    border-top: 2px solid var(--accent-cyan);
+    display: flex;
+    justify-content: space-between;
+}
+#liveFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #ffffff;
+}
+
+/* نافذة حالة النشر والحفظ السحابي */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(9, 10, 15, 0.8);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 30px;
+    border-radius: 15px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.modal-content h3 { margin-bottom: 15px; color: #fff; font-size: 20px; }
+.modal-content p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo-area">
+        <div class="logo-icon">⚡</div>
+        <div class="logo-title">أبو العز للبرمجة - Live Code Studio</div>
+    </div>
+    <div class="actions-area">
+        <button class="btn btn-secondary" onclick="resetCodes()">إعادة ضبط</button>
+        <button class="btn btn-primary" onclick="publishProject()">نشر وحفظ سحابي 🚀</button>
+    </div>
+</header>
+
+<div class="workspace">
+    <!-- مربع HTML -->
+    <div class="editor-box">
+        <div class="box-header html-tag">
+            <span>HTML</span>
+            <span>index.html</span>
+        </div>
+        <textarea id="htmlCode" class="code-textarea" placeholder="اكتب كود HTML هنا..." oninput="updatePreview()"><div class="welcome-card">
+    <h1>أهلاً بك في منصة أبو العز</h1>
+    <p>اكتب أي أكواد وسيتم تنفيذها فوراً أمامك بنظام فيزيائي وتفاعلي مذهل!</p>
+    <button onclick="alert('تم تفعيل التفاعل بنجاح!')">اضغط هنا للتجربة</button>
+</div></textarea>
+    </div>
+
+    <!-- مربع CSS -->
+    <div class="editor-box">
+        <div class="box-header css-tag">
+            <span>CSS</span>
+            <span>style.css</span>
+        </div>
+        <textarea id="cssCode" class="code-textarea" placeholder="اكتب كود CSS هنا..." oninput="updatePreview()">body {
+    background: linear-gradient(135deg, #0f172a, #1e1b4b);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Cairo', sans-serif;
+}
+.welcome-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: floatCard 3s ease-in-out infinite;
+}
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+h1 { font-size: 24px; margin-bottom: 10px; color: #38bdf8; }
+p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+button {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}</textarea>
+    </div>
+
+    <!-- مربع JavaScript -->
+    <div class="editor-box">
+        <div class="box-header js-tag">
+            <span>JS</span>
+            <span>script.js</span>
+        </div>
+        <textarea id="jsCode" class="code-textarea" placeholder="اكتب كود JavaScript هنا..." oninput="updatePreview()">// يمكنك كتابة أي تفاعل أو فيزياء برمجية هنا
+console.log("تم تحميل منصة أبو العز بنجاح!");</textarea>
+    </div>
+
+    <!-- صندوق المعاينة الحية -->
+    <div class="preview-box">
+        <div class="preview-header">
+            <span>معاينة النتيجة الحية (Live Output)</span>
+            <span style="color: var(--accent-cyan);">يعمل بـ Real-time Engine</span>
+        </div>
+        <iframe id="liveFrame"></iframe>
+    </div>
+</div>
+
+<!-- نافذة الحفظ والنشر السحابي -->
+<div class="modal-overlay" id="publishModal">
+    <div class="modal-content">
+        <h3>جاري حفظ المشروع سحابياً...</h3>
+        <p id="modalStatusText">جاري مزامنة الأكواد مع قاعدة البيانات السحابية المركزية وحفظها باسم أبو العز للبرمجة.</p>
+        <button class="btn btn-primary" onclick="closeModal()" style="width: 100%;">تم بنجاح ✓</button>
+    </div>
+</div>
+
+<script>
+    // محرك العرض الفوري للأكواد
+    function updatePreview() {
+        const html = document.getElementById('htmlCode').value;
+        const css = `<style>${document.getElementById('cssCode').value}</style>`;
+        const js = `<script>${document.getElementById('jsCode').value}<\/script>`;
+        
+        const frame = document.getElementById('liveFrame');
+        const frameDoc = frame.contentDocument || frame.contentWindow.document;
+        
+        frameDoc.open();
+        frameDoc.write(html + css + js);
+        frameDoc.close();
+    }
+
+    // زر إعادة الضبط
+    function resetCodes() {
+        if(confirm("هل أنت متأكد من إعادة تعيين جميع المربعات؟")) {
+            document.getElementById('htmlCode').value = '';
+            document.getElementById('cssCode').value = '';
+            document.getElementById('jsCode').value = '';
+            updatePreview();
+        }
+    }
+
+    // محاكاة زر النشر والحفظ السحابي
+    function publishProject() {
+        const modal = document.getElementById('publishModal');
+        const statusText = document.getElementById('modalStatusText');
+        modal.style.display = 'flex';
+        
+        statusText.innerText = "جاري الاتصال بقاعدة البيانات السحابية وتوليد رابط المشاركة المباشر لمشروعك...";
+        
+        setTimeout(() => {
+            statusText.innerText = "تم حفظ ونشر المشروع بنجاح تحت ترخيص (إدارة وتطوير أبو العز العمري)! الرابط السحابي جاهز.";
+        }, 1500);
+    }
+
+    function closeModal() {
+        document.getElementById('publishModal').style.display = 'none';
+    }
+
+    // تشغيل العرض الفوري عند فتح الصفحة لأول مرة
+    window.onload = () => {
+        updatePreview();
+    };
+</script>
+
+</body>
+</html>
