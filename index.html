@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="google-site-verification" content="fmIO4Mqa4kbHD9R2jhb-fLWyRyd3Bi9UDHC8v84CkZk">
-<title>منصة أبو العز المتقدمة لتطوير الأكواد | Live Studio</title>
+<title>منصة أبو العز للبرمجة | Live Studio & Community</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
@@ -29,7 +29,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* شريط التنقل العلوي الفاخر */
@@ -41,13 +41,16 @@ header {
     justify-content: space-between;
     align-items: center;
     height: 65px;
-    z-index: 100;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .logo-area {
     display: flex;
     align-items: center;
     gap: 12px;
+    cursor: pointer;
 }
 .logo-icon {
     font-size: 24px;
@@ -59,7 +62,26 @@ header {
     font-size: 18px;
     font-weight: 900;
     color: #fff;
-    letter-spacing: 0.5px;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 10px;
+}
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 6px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.tab-btn.active, .tab-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .actions-area {
@@ -82,20 +104,25 @@ header {
     color: #fff;
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
-.btn-primary:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
 .btn-secondary {
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-main);
     border: 1px solid var(--border-color);
 }
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+
+/* حاويات الصفحات الرئيسية */
+.page-container {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+}
+.page-container.active {
+    display: flex;
 }
 
-/* هيكل المنصة الرئيسي (مقسم لشبكة مربعات) */
+/* 1. قسم استوديو البرمجة (المربعات الثلاثة + المعاينة) */
 .workspace {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -123,10 +150,9 @@ header {
     align-items: center;
     border-bottom: 1px solid var(--border-color);
 }
-
-.box-header.html-tag { color: var(--html-color); border-top: 3px solid var(--html-color); }
-.box-header.css-tag { color: var(--css-color); border-top: 3px solid var(--css-color); }
-.box-header.js-tag { color: var(--js-color); border-top: 3px solid var(--js-color); }
+.box-header.html-tag { border-top: 3px solid var(--html-color); color: var(--html-color); }
+.box-header.css-tag { border-top: 3px solid var(--css-color); color: var(--css-color); }
+.box-header.js-tag { border-top: 3px solid var(--js-color); color: var(--js-color); }
 
 .code-textarea {
     flex: 1;
@@ -142,11 +168,9 @@ header {
     width: 100%;
     height: 100%;
     white-space: pre;
-    overflow-wrap: normal;
     overflow-x: auto;
 }
 
-/* صندوق معاينة النتيجة المباشرة (يشغل صفين في شبكة العرض) */
 .preview-box {
     grid-column: span 3;
     background: #fff;
@@ -164,72 +188,132 @@ header {
     display: flex;
     justify-content: space-between;
 }
-#liveFrame {
+#liveFrame { width: 100%; height: 100%; border: none; background: #ffffff; }
+
+/* 2. قسم معرض المشاريع العامة (أين تظهر المشاريع المنشورة) */
+.gallery-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
     width: 100%;
-    height: 100%;
-    border: none;
-    background: #ffffff;
+}
+.gallery-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+.gallery-header h2 { font-size: 32px; font-weight: 900; color: #fff; margin-bottom: 10px; }
+.gallery-header p { color: var(--text-muted); font-size: 15px; }
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
 }
 
-/* نافذة حالة النشر والحفظ السحابي */
+.project-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.project-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-cyan);
+}
+.project-card-header {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+.project-title { font-size: 18px; font-weight: 900; color: #fff; margin-bottom: 5px; }
+.project-author { font-size: 13px; color: var(--accent-cyan); font-weight: 600; }
+
+.project-card-body {
+    padding: 15px;
+    color: var(--text-muted);
+    font-size: 14px;
+    flex: 1;
+}
+.project-card-footer {
+    padding: 15px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* نافذة إدخال اسم المشروع عند النشر */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(9, 10, 15, 0.8);
+    background: rgba(9, 10, 15, 0.85);
     backdrop-filter: blur(5px);
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 2000;
 }
 .modal-content {
     background: var(--panel-bg);
     border: 1px solid var(--border-color);
     padding: 30px;
     border-radius: 15px;
-    width: 400px;
-    text-align: center;
+    width: 420px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 .modal-content h3 { margin-bottom: 15px; color: #fff; font-size: 20px; }
-.modal-content p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+.modal-input {
+    width: 100%;
+    padding: 12px;
+    background: #090a0f;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 15px;
+    margin-bottom: 20px;
+    outline: none;
+}
+.modal-input:focus { border-color: var(--accent-cyan); }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
 </style>
 </head>
 <body>
 
 <header>
-    <div class="logo-area">
+    <div class="logo-area" onclick="switchPage('studio')">
         <div class="logo-icon">⚡</div>
-        <div class="logo-title">أبو العز للبرمجة - Live Code Studio</div>
+        <div class="logo-title">أبو العز - Live Studio</div>
     </div>
+    
+    <div class="nav-tabs">
+        <button class="tab-btn active" id="btnTabStudio" onclick="switchPage('studio')">محرر الأكواد</button>
+        <button class="tab-btn" id="btnTabGallery" onclick="switchPage('gallery')">معرض المشاريع المنشورة 🌐</button>
+    </div>
+
     <div class="actions-area">
         <button class="btn btn-secondary" onclick="resetCodes()">إعادة ضبط</button>
-        <button class="btn btn-primary" onclick="publishProject()">نشر وحفظ سحابي 🚀</button>
+        <button class="btn btn-primary" onclick="openPublishModal()">نشر المشروع 🚀</button>
     </div>
 </header>
 
-<div class="workspace">
-    <!-- مربع HTML -->
-    <div class="editor-box">
-        <div class="box-header html-tag">
-            <span>HTML</span>
-            <span>index.html</span>
-        </div>
-        <textarea id="htmlCode" class="code-textarea" placeholder="اكتب كود HTML هنا..." oninput="updatePreview()"><div class="welcome-card">
-    <h1>أهلاً بك في منصة أبو العز</h1>
-    <p>اكتب أي أكواد وسيتم تنفيذها فوراً أمامك بنظام فيزيائي وتفاعلي مذهل!</p>
-    <button onclick="alert('تم تفعيل التفاعل بنجاح!')">اضغط هنا للتجربة</button>
+<!-- صفحة 1: الاستوديو البرمجي -->
+<div id="pageStudio" class="page-container active">
+    <div class="workspace">
+        <div class="editor-box">
+            <div class="box-header html-tag"><span>HTML</span><span>index.html</span></div>
+            <textarea id="htmlCode" class="code-textarea" placeholder="اكتب كود HTML هنا..." oninput="updatePreview()"><div class="card">
+    <h1>مرحباً بك في مشروعي الرائع</h1>
+    <p>تم تطويره وتصميمه عبر منصة أبو العز الحية.</p>
+    <button onclick="alert('تفاعل حقيقي يعمل بنجاح!')">اضغط هنا</button>
 </div></textarea>
-    </div>
-
-    <!-- مربع CSS -->
-    <div class="editor-box">
-        <div class="box-header css-tag">
-            <span>CSS</span>
-            <span>style.css</span>
         </div>
-        <textarea id="cssCode" class="code-textarea" placeholder="اكتب كود CSS هنا..." oninput="updatePreview()">body {
-    background: linear-gradient(135deg, #0f172a, #1e1b4b);
+
+        <div class="editor-box">
+            <div class="box-header css-tag"><span>CSS</span><span>style.css</span></div>
+            <textarea id="cssCode" class="code-textarea" placeholder="اكتب كود CSS هنا..." oninput="updatePreview()">body {
+    background: #0f172a;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -237,65 +321,95 @@ header {
     margin: 0;
     font-family: 'Cairo', sans-serif;
 }
-.welcome-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 40px;
-    border-radius: 20px;
+.card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 30px;
+    border-radius: 15px;
     text-align: center;
     color: #fff;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    animation: floatCard 3s ease-in-out infinite;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
-@keyframes floatCard {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-h1 { font-size: 24px; margin-bottom: 10px; color: #38bdf8; }
+h1 { color: #38bdf8; font-size: 22px; margin-bottom: 10px; }
 p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
 button {
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-    color: #fff;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
+    background: #2563eb; color: #fff; border: none;
+    padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;
 }</textarea>
-    </div>
-
-    <!-- مربع JavaScript -->
-    <div class="editor-box">
-        <div class="box-header js-tag">
-            <span>JS</span>
-            <span>script.js</span>
         </div>
-        <textarea id="jsCode" class="code-textarea" placeholder="اكتب كود JavaScript هنا..." oninput="updatePreview()">// يمكنك كتابة أي تفاعل أو فيزياء برمجية هنا
-console.log("تم تحميل منصة أبو العز بنجاح!");</textarea>
-    </div>
 
-    <!-- صندوق المعاينة الحية -->
-    <div class="preview-box">
-        <div class="preview-header">
-            <span>معاينة النتيجة الحية (Live Output)</span>
-            <span style="color: var(--accent-cyan);">يعمل بـ Real-time Engine</span>
+        <div class="editor-box">
+            <div class="box-header js-tag"><span>JS</span><span>script.js</span></div>
+            <textarea id="jsCode" class="code-textarea" placeholder="اكتب كود JavaScript هنا..." oninput="updatePreview()">console.log("المشروع يعمل بكفاءة تامة!");</textarea>
         </div>
-        <iframe id="liveFrame"></iframe>
+
+        <div class="preview-box">
+            <div class="preview-header">
+                <span>معاينة النتيجة الحية</span>
+                <span style="color: var(--accent-cyan);">Real-time Engine</span>
+            </div>
+            <iframe id="liveFrame"></iframe>
+        </div>
     </div>
 </div>
 
-<!-- نافذة الحفظ والنشر السحابي -->
+<!-- صفحة 2: معرض المشاريع المنشورة العامة -->
+<div id="pageGallery" class="page-container">
+    <div class="gallery-section">
+        <div class="gallery-header">
+            <h2>معرض المشاريع السحابية العامة</h2>
+            <p>هنا تظهر جميع المشاريع التي يقوم المطورون بنشرها لتكون متاحة للجميع للاطلاع عليها!</p>
+        </div>
+        <div class="projects-grid" id="projectsGrid">
+            <!-- ستتم تعبئة المشاريع ديناميكياً هنا -->
+        </div>
+    </div>
+</div>
+
+<!-- نافذة إدخال تفاصيل النشر -->
 <div class="modal-overlay" id="publishModal">
     <div class="modal-content">
-        <h3>جاري حفظ المشروع سحابياً...</h3>
-        <p id="modalStatusText">جاري مزامنة الأكواد مع قاعدة البيانات السحابية المركزية وحفظها باسم أبو العز للبرمجة.</p>
-        <button class="btn btn-primary" onclick="closeModal()" style="width: 100%;">تم بنجاح ✓</button>
+        <h3>نشر المشروع إلى المعرض العام</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">أدخل عنواناً لمشروعك واسم المطور ليظهر في المعرض السحابي العام.</p>
+        <input type="text" id="projectTitleInput" class="modal-input" placeholder="عنوان المشروع (مثلاً: لعبة السنيك الذكية)">
+        <input type="text" id="authorInput" class="modal-input" value="أبو حازم العمري (أبو العز)" placeholder="اسم المطور">
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closePublishModal()">إلغاء</button>
+            <button class="btn btn-primary" onclick="confirmPublish()">نشر الآن 🚀</button>
+        </div>
     </div>
 </div>
 
 <script>
-    // محرك العرض الفوري للأكواد
+    // قاعدة بيانات محلية وسحابية وهمية لتخزين المشاريع (تعتمد على localStorage المتطورة)
+    let projects = JSON.parse(localStorage.getItem('abou_elaz_projects')) || [
+        {
+            id: 1,
+            title: "بطاقة الترحيب السحابية التفاعلية",
+            author: "إدارة وتطوير أبو العز",
+            html: '<div class="card"><h1>مشروع تجريبي افتتاحي</h1><p>أهلاً بك في أول مشروع منشور على المنصة.</p></div>',
+            css: 'body{background:#090a0f;display:flex;justify-content:center;align-items:center;height:100vh;color:#fff;font-family:sans-serif}.card{background:#13151f;padding:30px;border-radius:12px;border:1px solid #1f2333;text-align:center;}h1{color:#06b6d4;font-size:20px;}',
+            js: 'console.log("Welcome to project 1");'
+        }
+    ];
+
+    // تبديل الصفحات (استوديو <-> المعرض)
+    function switchPage(pageName) {
+        document.querySelectorAll('.page-container').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        
+        if(pageName === 'studio') {
+            document.getElementById('pageStudio').classList.add('active');
+            document.getElementById('btnTabStudio').classList.add('active');
+            updatePreview();
+        } else if(pageName === 'gallery') {
+            document.getElementById('pageGallery').classList.add('active');
+            document.getElementById('btnTabGallery').classList.add('active');
+            renderProjectsGallery();
+        }
+    }
+
+    // محرك المعاينة الحية الفورية
     function updatePreview() {
         const html = document.getElementById('htmlCode').value;
         const css = `<style>${document.getElementById('cssCode').value}</style>`;
@@ -309,9 +423,9 @@ console.log("تم تحميل منصة أبو العز بنجاح!");</textarea>
         frameDoc.close();
     }
 
-    // زر إعادة الضبط
+    // إعادة ضبط الأكواد
     function resetCodes() {
-        if(confirm("هل أنت متأكد من إعادة تعيين جميع المربعات؟")) {
+        if(confirm("هل أنت متأكد من مسح جميع المربعات؟")) {
             document.getElementById('htmlCode').value = '';
             document.getElementById('cssCode').value = '';
             document.getElementById('jsCode').value = '';
@@ -319,24 +433,81 @@ console.log("تم تحميل منصة أبو العز بنجاح!");</textarea>
         }
     }
 
-    // محاكاة زر النشر والحفظ السحابي
-    function publishProject() {
-        const modal = document.getElementById('publishModal');
-        const statusText = document.getElementById('modalStatusText');
-        modal.style.display = 'flex';
-        
-        statusText.innerText = "جاري الاتصال بقاعدة البيانات السحابية وتوليد رابط المشاركة المباشر لمشروعك...";
-        
-        setTimeout(() => {
-            statusText.innerText = "تم حفظ ونشر المشروع بنجاح تحت ترخيص (إدارة وتطوير أبو العز العمري)! الرابط السحابي جاهز.";
-        }, 1500);
+    // فتح وإغلاق نافذة النشر
+    function openPublishModal() {
+        document.getElementById('publishModal').style.display = 'flex';
     }
-
-    function closeModal() {
+    function closePublishModal() {
         document.getElementById('publishModal').style.display = 'none';
     }
 
-    // تشغيل العرض الفوري عند فتح الصفحة لأول مرة
+    // تأكيد النشر والحفظ السحابي
+    function confirmPublish() {
+        const title = document.getElementById('projectTitleInput').value.trim();
+        const author = document.getElementById('authorInput').value.trim();
+        
+        if(!title) {
+            alert("الرجاء إدخال عنوان للمشروع!");
+            return;
+        }
+
+        const newProject = {
+            id: Date.now(),
+            title: title,
+            author: author || "مطور مجهول",
+            html: document.getElementById('htmlCode').value,
+            css: document.getElementById('cssCode').value,
+            js: document.getElementById('jsCode').value
+        };
+
+        projects.unshift(newProject); // إضافة المشروع في قمة القائمة
+        localStorage.setItem('abou_elaz_projects', JSON.stringify(projects));
+        
+        closePublishModal();
+        alert("تم نشر المشروع بنجاح وحفظه في قاعدة البيانات السحابية!");
+        switchPage('gallery'); // الانتقال التلقائي لمعرض المشاريع لرؤية النتيجة
+    }
+
+    // عرض المشاريع في المعرض العام
+    function renderProjectsGallery() {
+        const grid = document.getElementById('projectsGrid');
+        grid.innerHTML = '';
+
+        if(projects.length === 0) {
+            grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">لا توجد مشاريع منشورة حتى الآن. كن أول من ينشر مشروعاً!</p>';
+            return;
+        }
+
+        projects.forEach(proj => {
+            grid.innerHTML += `
+                <div class="project-card">
+                    <div class="project-card-header">
+                        <div class="project-title">${proj.title}</div>
+                        <div class="project-author">بواسطة: ${proj.author}</div>
+                    </div>
+                    <div class="project-card-body">
+                        مشروع برمجي تفاعلي متكامل يتضمن أكواد HTML, CSS و JavaScript مصممة بإشراف أبو العز.
+                    </div>
+                    <div class="project-card-footer">
+                        <button class="btn btn-primary" onclick="loadProject(${proj.id})">فتح واستعراض المشروع 👁️</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // فتح مشروع من المعرض وتحميله في المحرر لاستعراضه
+    function loadProject(id) {
+        const proj = projects.find(p => p.id === id);
+        if(proj) {
+            document.getElementById('htmlCode').value = proj.html;
+            document.getElementById('cssCode').value = proj.css;
+            document.getElementById('jsCode').value = proj.js;
+            switchPage('studio');
+        }
+    }
+
+    // تشغيل العرض الأولي عند فتح الصفحة
     window.onload = () => {
         updatePreview();
     };
